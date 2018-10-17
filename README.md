@@ -1,2 +1,2 @@
 # Automated-Target-Advancer
-Senior Desing Project
+Senior Design Project

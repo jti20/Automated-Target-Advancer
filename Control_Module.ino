@@ -27,10 +27,10 @@ void loop() {
     String string4 = input.substring(stop3+1);
 
     //Add identifiers to data based on order
-    string1 = "Humidity" + string1;
-    string2 = "Pressure" + string2;
-    string3 = "Temp" + string3;
-    string4 = "Windspeed" + string4;
+    string1 = "Humidity: " + string1 + "%";
+    string2 = "Pressure: " + string2 + " kPa";
+    string3 = "Temp: " + string3 + " F";
+    string4 = "Windspeed: " + string4 + " MPH";
 
     //Print to LCD Screen
     lcd.setCursor(0,0);

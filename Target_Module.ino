@@ -23,7 +23,6 @@ String totalstring = "";
 BME280 mySensor; //Uses default I2C address 0x77
 
 void setup() {
-  pinMode(buttonPin, INPUT);
   mySerial.begin(9600);
   Wire.begin();
   mySensor.setI2CAddress(0x77); //The default for the SparkFun Environmental Combo board is 0x77 (jumper open).
@@ -43,6 +42,9 @@ void loop() {
   windspeed = windspeed*(5.0/1024.0);
   windspeed = (20.25*windspeed)-8.1;
   windspeed = windspeed*2.237;
+  if(windspeed<0){
+    windspeed = 0;
+  }
 
   //Convert data to string for transmission
   string1 = String(int1);

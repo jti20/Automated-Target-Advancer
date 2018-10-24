@@ -19,6 +19,7 @@ int int3 = 0;
 float windspeed = 0.0;
 int windpin = A0;
 String totalstring = "";
+int motorpin = 8;
 
 BME280 mySensor; //Uses default I2C address 0x77
 
@@ -28,9 +29,23 @@ void setup() {
   mySensor.setI2CAddress(0x77); //The default for the SparkFun Environmental Combo board is 0x77 (jumper open).
   if(mySensor.beginI2C() == false) Serial.println("Sensor connect failed");
   Serial.begin(9600);
+  pinMode(motorpin, OUTPUT);
 }
 
 void loop() {
+  //Code for motor control
+  if(mySerial.available() > 1){
+    String strinput = mySerial.readString();
+    if(strinput.charAt(0) == '1'){
+      //RollMotor
+      digitalWrite(motorpin, HIGH);
+      Serial.println("Motor On");
+      delay(5000);
+      Serial.println("Motor Off");
+      digitalWrite(motorpin, LOW);
+    }
+  }
+  
   //Read environmental data
   int1 = (int)(mySensor.readFloatHumidity());
   int2 = (int)(mySensor.readFloatPressure()/1000);
@@ -38,7 +53,7 @@ void loop() {
 
   //Read winspeed data and convert to MPH
   windspeed = analogRead(windpin);
-  Serial.println(windspeed);
+  //Serial.println(windspeed);
   windspeed = windspeed*(5.0/1024.0);
   windspeed = (20.25*windspeed)-8.1;
   windspeed = windspeed*2.237;
@@ -57,7 +72,7 @@ void loop() {
 
   //Send string over HC-12
   mySerial.print(totalstring);
-  Serial.println(totalstring);  
+  //Serial.println(totalstring);  
   delay(2000);
 }
 

@@ -19,7 +19,13 @@ int int3 = 0;
 float windspeed = 0.0;
 int windpin = A0;
 String totalstring = "";
-int motorpin = 8;
+
+//Motor Control Constants
+int Motor = 8;
+const int Sensor_PIN = A1; // Sensor output voltage
+int changeTarget = 1;      // Received from the controller to index target
+int i = 0;                 // For finding average
+float proximity_AVG = 0.0;       // Average of the signals from the sensor
 
 BME280 mySensor; //Uses default I2C address 0x77
 
@@ -29,7 +35,7 @@ void setup() {
   mySensor.setI2CAddress(0x77); //The default for the SparkFun Environmental Combo board is 0x77 (jumper open).
   if(mySensor.beginI2C() == false) Serial.println("Sensor connect failed");
   Serial.begin(9600);
-  pinMode(motorpin, OUTPUT);
+  pinMode(Motor, OUTPUT);
 }
 
 void loop() {
@@ -38,11 +44,30 @@ void loop() {
     String strinput = mySerial.readString();
     if(strinput.charAt(0) == '1'){
       //RollMotor
-      digitalWrite(motorpin, HIGH);
-      Serial.println("Motor On");
-      delay(5000);
-      Serial.println("Motor Off");
-      digitalWrite(motorpin, LOW);
+      changeTarget = 1;
+      // Turn motor on
+      digitalWrite(Motor, HIGH);
+      // Wait to get off initial black mark
+      delay(1000);
+      // Code for sensing stop black mark
+    while (changeTarget == 1){    //Waiting until there is a new target
+      int proximityADC = analogRead(Sensor_PIN);   //Read Sensor
+      i += 1;      
+      float proximityV = (float)proximityADC * 5.0 / 1023.0; // Convert to 0-5 Volts
+      proximity_AVG += proximityV;           //AVG of Sensor
+      //Serial.println(proximityV);                          
+      delay(100);                          //Delay between sensing - the actual is 20ms
+      if (i  == 9){                      //After 20ms, Check for black mark
+        proximity_AVG = proximity_AVG/10.0;
+        Serial.println(proximity_AVG);
+        i = 0;
+        if (proximity_AVG > 3){
+          digitalWrite(Motor,LOW);
+          changeTarget = 0;             //Will need to be changed to ZERO once program is implemented
+        }
+        proximity_AVG = 0;
+      }
+    }     
     }
   }
   

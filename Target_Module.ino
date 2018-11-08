@@ -5,6 +5,7 @@
 
 SoftwareSerial mySerial(2, 3); //RX, TX
 
+//Initialize Constants
 String string1 = "";
 String string2 = "";
 String string3 = "";
@@ -21,7 +22,7 @@ int Motor = 8;
 const int Sensor_PIN = A1; // Sensor output voltage
 int changeTarget = 1;      // Received from the controller to index target
 int i = 0;                 // For finding average
-float proximity_AVG = 0.0;       // Average of the signals from the sensor
+float proximity_AVG = 0.0; // Average of the signals from the sensor
 
 BME280 mySensor; //Uses default I2C address 0x77
 
@@ -36,6 +37,8 @@ void setup() {
 
 void loop() {
   //Code for motor control
+
+  //Check if there is a change target command available
   if(mySerial.available() > 1){
     String strinput = mySerial.readString();
     if(strinput.charAt(0) == '1'){
@@ -46,20 +49,20 @@ void loop() {
       // Wait to get off initial black mark
       delay(1000);
       // Code for sensing stop black mark
-    while (changeTarget == 1){    //Waiting until there is a new target
+    while (changeTarget == 1){    //While not stop signal detected
       int proximityADC = analogRead(Sensor_PIN);   //Read Sensor
       i += 1;      
       float proximityV = (float)proximityADC * 5.0 / 1023.0; // Convert to 0-5 Volts
       proximity_AVG += proximityV;           //AVG of Sensor
       //Serial.println(proximityV);                          
-      delay(100);                          //Delay between sensing - the actual is 20ms
-      if (i  == 9){                      //After 20ms, Check for black mark
+      delay(100);                          //Delay between sensing - the actual is 1s
+      if (i  == 9){                      //After 1s, Check for black mark
         proximity_AVG = proximity_AVG/10.0;
         Serial.println(proximity_AVG);
         i = 0;
-        if (proximity_AVG > 3){
+        if (proximity_AVG > 3){   //If average sensor reading is > 3 then turn motor off
           digitalWrite(Motor,LOW);
-          changeTarget = 0;             //Will need to be changed to ZERO once program is implemented
+          changeTarget = 0;             
         }
         proximity_AVG = 0;
       }

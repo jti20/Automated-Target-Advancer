@@ -1,7 +1,3 @@
-//HC-12 Toggle button Send
-//Autor Tom Heylen tomtomheylen.com
-
-
 #include <SoftwareSerial.h>
 #include <Wire.h>
 #include "SparkFunBME280.h"

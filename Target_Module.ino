@@ -10,12 +10,14 @@ String string1 = "";
 String string2 = "";
 String string3 = "";
 String string4 = "";
+String string5 = "";
 int int1 = 0;
 int int2 = 0;
 int int3 = 0;
 float windspeed = 0.0;
 int windpin = A0;
 String totalstring = "";
+float theta = 0.0;
 
 //Motor Control Constants
 int Motor = 8;
@@ -23,6 +25,7 @@ const int Sensor_PIN = A1; // Sensor output voltage
 int changeTarget = 1;      // Received from the controller to index target
 int i = 0;                 // For finding average
 float proximity_AVG = 0.0; // Average of the signals from the sensor
+const int wind_dir = A2;
 
 BME280 mySensor; //Uses default I2C address 0x77
 
@@ -58,7 +61,7 @@ void loop() {
       delay(100);                          //Delay between sensing - the actual is 1s
       if (i  == 9){                      //After 1s, Check for black mark
         proximity_AVG = proximity_AVG/10.0;
-        Serial.println(proximity_AVG);
+        //Serial.println(proximity_AVG);
         i = 0;
         if (proximity_AVG > 3){   //If average sensor reading is > 3 then turn motor off
           digitalWrite(Motor,LOW);
@@ -75,6 +78,12 @@ void loop() {
   int2 = (int)(mySensor.readFloatPressure()/1000);
   int3 = (int)(mySensor.readTempF());
 
+  //Read Wind Direction
+  theta = analogRead(wind_dir);
+  theta = theta*(5.0/1024.0);
+  theta = .036*((19100.0-3820*theta)/theta);
+  Serial.println(theta);
+
   //Read winspeed data and convert to MPH
   windspeed = analogRead(windpin);
   //Serial.println(windspeed);
@@ -90,9 +99,10 @@ void loop() {
   string2 = String(int2);
   string3 = String(int3);
   string4 = String(windspeed);
+  string5 = String(theta);
 
   //Concatonate strings with "!" to separate individual pieces of data
-  totalstring = string1+"!"+string2+"!"+string3+"!"+string4;
+  totalstring = string1+"!"+string2+"!"+string3+"!"+string4+"!"+string5;
 
   //Send string over HC-12
   mySerial.print(totalstring);

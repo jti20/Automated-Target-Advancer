@@ -38,11 +38,13 @@ void loop() {
     int stop1 = input.indexOf('!');
     int stop2 = input.indexOf('!',stop1+1);
     int stop3 = input.indexOf('!',stop2+1);
+    int stop4 = input.indexOf('!',stop3+1);
 
     String string1 = input.substring(0,stop1);
     String string2 = input.substring(stop1+1,stop2);
     String string3 = input.substring(stop2+1,stop3);
-    String string4 = input.substring(stop3+1);
+    String string4 = input.substring(stop3+1,stop4);
+    String string5 = input.substring(stop4+1);
 
     //Add identifiers to data based on order. Also add padding.
     string1 = "Humidity: " + string1 + "%";
@@ -75,7 +77,7 @@ void loop() {
     }
 
     //Print to LCD Screen
-    lcd.setCursor(0,0);
+    lcd.setCursor(0,3);
     lcd.print(string1);
     delay(20);
     lcd.setCursor(0,1);
@@ -84,7 +86,7 @@ void loop() {
     lcd.setCursor(0,2);
     lcd.print(string3);
     delay(20);
-    lcd.setCursor(0,3);
+    lcd.setCursor(0,0);
     lcd.print(string4);
   }
   delay(50);

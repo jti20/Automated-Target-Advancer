@@ -82,9 +82,16 @@ void loop() {
   theta = analogRead(wind_dir);
   theta = theta*(5.0/1024.0);
   theta = .036*((19100.0-3820*theta)/theta);
-  Serial.println(theta);
+  theta = (int) theta;
+  if(theta > 360){
+    theta = 360;
+  }
+  int temptheta = theta;
+  String strtheta = String(temptheta);
+  strtheta = String(strtheta);
+  //Serial.println(strtheta);
 
-  //Read winspeed data and convert to MPH
+  //Read windspeed data and convert to MPH
   windspeed = analogRead(windpin);
   //Serial.println(windspeed);
   windspeed = windspeed*(5.0/1024.0);
@@ -99,7 +106,7 @@ void loop() {
   string2 = String(int2);
   string3 = String(int3);
   string4 = String(windspeed);
-  string5 = String(theta);
+  string5 = String(strtheta);
 
   //Concatonate strings with "!" to separate individual pieces of data
   totalstring = string1+"!"+string2+"!"+string3+"!"+string4+"!"+string5;

@@ -32,7 +32,6 @@ void loop() {
   //Check if data is available on HC-12
   if(mySerial.available() > 1){
     String input = mySerial.readString();
-    Serial.println(input);
 
     //Parse incoming string to get individual data
     int stop1 = input.indexOf('!');
@@ -46,14 +45,19 @@ void loop() {
     String string4 = input.substring(stop3+1,stop4);
     String string5 = input.substring(stop4+1);
 
+    Serial.println(string5);
+
     //Add identifiers to data based on order. Also add padding.
     string1 = "Humidity: " + string1 + "%";
-    if(string1.length() < 20){
-      int numpad = 20 - string1.length();
-      for(int i=0; i<numpad; i++){
-        string1 += ' ';
-      }
-    }
+//    if(string1.length() < 20){
+//      int numpad = 20 - string1.length();
+//      for(int i=0; i<numpad; i++){
+//        string1 += ' ';
+//      }
+//    }
+    string1 += ' ';
+    string1 += ' ';
+
     string2 = "Pressure: " + string2 + " kPa";
     if(string2.length() < 20){
       int numpad = 20 - string2.length();
@@ -88,6 +92,8 @@ void loop() {
     delay(20);
     lcd.setCursor(0,0);
     lcd.print(string4);
+    lcd.setCursor(17,3);
+    lcd.print(string5);
   }
   delay(50);
 }
